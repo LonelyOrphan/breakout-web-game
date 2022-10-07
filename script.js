@@ -35,6 +35,7 @@ function drawPaddle() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
+  drawPaddle();
   x += dx;
   y += dy;
   // Bounce off side walls
@@ -43,9 +44,22 @@ function draw() {
     ballColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   }
   // Bounce off top and bottom walls
-  if (y + dy > canvas.height - ballRadius || y + dy < 0) {
+  if (y + dy < ballRadius) {
     dy = -dy;
     ballColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  } else if (y + dy > canvas.height - ballRadius) {
+    if (x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+    } else {
+      alert("GAME OVER");
+      document.location.reload();
+      clearInterval(interval);
+    }
+  }
+  if (rightPressed) {
+    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+  } else if (leftPressed) {
+    paddleX = Math.max(paddleX - 7, 0);
   }
 }
 
@@ -71,4 +85,4 @@ function keyUpHandler(e) {
 }
 
 //  call draw function every 10 milliseconds
-setInterval(draw, 10);
+const interval = setInterval(draw, 10);
